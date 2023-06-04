@@ -3,7 +3,7 @@
 
 const int ledPin =10;
 const int buzzerPin =11;
-const int potPin=A0;
+const int potPin=A0; //pot yerine sensor koymak ikazı anlamlı hale getirir
 void setup()
 {
   pinMode(10,OUTPUT);
