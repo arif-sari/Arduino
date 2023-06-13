@@ -1,0 +1,26 @@
+// C++ code
+//
+
+
+int Led =2;
+
+void setup()
+{
+  pinMode(2,OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  int isik= analogRead(A0);
+  
+  delay(50);
+  Serial.println("Isik degeri:");
+  Serial.println(isik);
+  if(isik<100){
+  	digitalWrite(2,HIGH);
+  }else{
+ 	digitalWrite(2,LOW);
+    
+  }
+}
