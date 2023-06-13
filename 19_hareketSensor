@@ -1,0 +1,24 @@
+// C++ code
+//
+
+int sensorPin = 9;
+void setup()
+{
+  Serial.begin(9600);
+  
+  pinMode(9,INPUT);
+}
+
+void loop()
+{
+  int deger= digitalRead(9);
+  
+  if(deger==HIGH)
+  {
+    Serial.println("Etrafta birileri var");
+  }else{
+  Serial.println("Etraf sakin görünüyor");
+  }
+  
+  
+}
