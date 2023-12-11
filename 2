@@ -1,0 +1,135 @@
+//https://www.electroniclinic.com/control-position-and-speed-of-stepper-motor-using-android-bluetooth-app-a4988-driver-arduino/
+
+/* receiver side
+
+Commands:
+direction,0,#  'to rotate the stepper motor in forward direction
+direction,1,#  'to rotate the stepper motor in reverse direction
+
+position,200,#  'the maximum number of steps you want to move from the starting position
+
+speed,1000,#    ' this commands sets the speed
+
+*/
+
+//#include <SoftwareSerial.h>
+//SoftwareSerial Blue(2, 3);
+
+  // Stepper Motor X
+  const int stepPin = 2; //X.STEP
+  const int dirPin = 3; // X.DIR
+  
+String myString; 
+char rdata; 
+int Values; 
+String Identifier;
+int Position = 0;
+int Speed = 0;
+
+
+
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(9600); 
+ //Blue.begin(9600);
+
+pinMode(stepPin,OUTPUT); 
+pinMode(dirPin,OUTPUT);
+
+delay(100); 
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+if(Serial.available() == 0)
+{
+  Serial.println("Position");
+  Serial.println(Position);
+  Serial.println("Speed");
+  Serial.println(Speed);
+
+
+
+digitalWrite(dirPin,HIGH); // Enables the motor to move in a particular direction
+ // Makes 200 pulses for making one full cycle rotation
+ for(int x = 0; x < Position; x++) {
+ digitalWrite(stepPin,HIGH); 
+ delayMicroseconds(Speed); 
+ digitalWrite(stepPin,LOW); 
+ delayMicroseconds(Speed); 
+ }
+ delay(1000); // One second delay
+ 
+ digitalWrite(dirPin,LOW); //Changes the rotations direction
+ // Makes 400 pulses for making two full cycle rotation
+ for(int x = 0; x < Position; x++) {
+ digitalWrite(stepPin,HIGH);
+ delayMicroseconds(Speed);
+ digitalWrite(stepPin,LOW);
+ delayMicroseconds(Speed);
+ }
+ delay(1000);
+
+  
+}
+
+
+if ( Serial.available() > 0 )
+{
+rdata = Serial.read();
+myString = myString + rdata;
+//Serial.print(rdata);
+if(rdata == '\#') // add the # character at the end of string
+{
+  
+String l = getValue(myString, ',', 0); // identifier
+String m = getValue(myString, ',', 1); // value
+Values = m.toInt();
+
+if( l == "position")
+{
+  Identifier = "position";
+  Position = Values;
+}
+
+if( l == "speed")
+{
+  Identifier = "speed";
+  Speed = Values;
+}
+
+if( l == "direction")
+{
+  
+ int Direction = Values; // this value may be 1 or 0
+ digitalWrite(dirPin,Direction); // Enables the motor to move in a particular direction
+ digitalWrite(stepPin,HIGH); 
+ delayMicroseconds(500); 
+ digitalWrite(stepPin,LOW); 
+ delayMicroseconds(500); 
+  
+}
+
+
+
+myString = ""; 
+
+}
+}
+}
+
+String getValue(String data, char separator, int index)
+{
+    int found = 0;
+    int strIndex[] = { 0, -1 };
+    int maxIndex = data.length() - 1;
+
+    for (int i = 0; i <= maxIndex && found <= index; i++) {
+        if (data.charAt(i) == separator || i == maxIndex) {
+            found++;
+            strIndex[0] = strIndex[1] + 1;
+            strIndex[1] = (i == maxIndex) ? i+1 : i;
+        }
+    }
+    return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
